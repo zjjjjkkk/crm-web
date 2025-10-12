@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operation-admin
+  namespace: test
+  labels:
+    app: operation-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: operation-admin
+  template:
+    metadata:
+      labels:
+        app: operation-admin
+    spec:
+      imagePullSecrets:
+        - name: regsecret
+      containers:
+        - name: operation-admin
+          image: __IMAGE__
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: operation-admin-svc
+  namespace: test
+spec:
+  selector: #通过下面标签(label)来选择Pod
+    app: operation-admin
+  ports:
+    - name: http
+      targetPort: 80
+      port: 80
