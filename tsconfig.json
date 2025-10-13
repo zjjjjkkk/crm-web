@@ -10,10 +10,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["esnext", "dom"],
     "baseUrl": ".",
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
@@ -25,18 +22,9 @@
     "noImplicitAny": false,
     "skipLibCheck": true,
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "types/**/*.d.ts"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "/src/components/ProTable/index.vue",
-  ]
+  "include": ["src/**/*", "types/**/*.d.ts"],
+  "exclude": ["dist", "node_modules", "/src/components/ProTable/index.vue"]
 }

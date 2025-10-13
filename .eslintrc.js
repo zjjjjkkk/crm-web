@@ -24,7 +24,9 @@ module.exports = defineConfig({
     'prettier',
     // eslint-config-prettier 关闭与prettier冲突的规则，prettier接管代码风格。其依赖需要eslint-plugin-prettier
     // 一定要放在最后。因为 extends 中后引入的规则会覆盖前面的规则。
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
+    "prettier", // 禁用 ESLint 中与 Prettier 冲突的规则
+    "plugin:prettier/recommended" // 启用 Prettier 作为 ESLint 规则
   ],
   rules: {
     'vue/script-setup-uses-vars': 'error',

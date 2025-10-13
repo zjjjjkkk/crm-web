@@ -1,0 +1,12 @@
+{
+  "printWidth": 100, // 每行最大字符数
+  "tabWidth": 2, // 缩进空格数
+  "useTabs": false, // 使用空格而非制表符
+  "singleQuote": true, // 使用单引号
+  "semi": true, // 语句结尾加分号
+  "trailingComma": "all", // 对象/数组最后一个元素加逗号
+  "bracketSpacing": true, // 对象字面量括号间加空格（{ foo: bar }）
+  "arrowParens": "always", // 箭头函数参数加括号（(x) => x）
+  "htmlWhitespaceSensitivity": "ignore", // HTML 空格不敏感
+  "vueIndentScriptAndStyle": true // Vue 中 script/style 标签内缩进
+}
