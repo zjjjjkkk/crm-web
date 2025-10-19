@@ -1,122 +1,48 @@
 <template>
-  <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" size="large">
-    <el-form-item prop="account">
-      <el-input :prefix-icon="User" v-model="loginForm.account" placeholder="用户名"> </el-input>
+  <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
+    <el-form-item label="账号" prop="account">
+      <el-input v-model="form.account" placeholder="请输入账号" />
     </el-form-item>
-    <el-form-item prop="password">
-      <el-input :prefix-icon="Lock" type="password" v-model="loginForm.password" placeholder="密码" show-password autocomplete="new-password"> </el-input>
+    <el-form-item label="密码" prop="password">
+      <el-input type="password" v-model="form.password" placeholder="请输入密码" />
     </el-form-item>
-    <!-- <el-form-item prop="captcha">
-      <el-input :prefix-icon="Postcard" maxlength="5" type="text" placeholder="验证码" v-model="loginForm.captcha" class="vertify_code" auto-complete="false">
-        <template #suffix>
-          <img :src="captchaUrl" @click="initCaptcha" class="vertify_img" />
-        </template>
-      </el-input>
-    </el-form-item> -->
+    <el-form-item>
+      <el-button type="primary" @click="handleLogin">登录</el-button>
+    </el-form-item>
   </el-form>
-  <div class="login-btn">
-    <el-button :icon="CircleClose" round @click="resetForm(loginFormRef)" size="large">重置</el-button>
-    <el-button :icon="UserFilled" round @click="login(loginFormRef)" size="large" type="primary" :loading="loading"> 登录 </el-button>
-  </div>
 </template>
 
-<script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+<script setup lang="ts" name="LoginForm">
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Login } from '@/api/interface/index'
-import { ElNotification } from 'element-plus'
-import { loginApi } from '@/api/modules/login'
-import { useAppStoreWithOut } from '@/store/modules/app'
-import { useTabsStoreWithOut } from '@/store/modules/tabs'
-import { getTimeState } from '@/utils/util'
-import { initDynamicRouter } from '@/router/modules/dynamicRouter'
-import { CircleClose, UserFilled, Lock, User } from '@element-plus/icons-vue'
-import { usePermissionStoreWithOut } from '@/store/modules/permission'
-import { getManagerInfoApi } from '@/api/modules/manager'
-import type { ElForm } from 'element-plus'
-// import md5 from "js-md5";
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/store/modules/user'
+import { login } from '@/api/auth' // 假设已有登录接口封装
 
-const { push } = useRouter()
-const tabsStore = useTabsStoreWithOut()
-const appStore = useAppStoreWithOut()
-const permissionStore = usePermissionStoreWithOut()
-// 定义 formRef（校验规则）
-type FormInstance = InstanceType<typeof ElForm>
-const loginFormRef = ref<FormInstance>()
-const loginRules = reactive({
-  account: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-  password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
-  // captcha: [{ required: true, message: '验证码不能为空', trigger: 'blur' }]
+const form = ref({ account: '', password: '' })
+const formRef = ref(null)
+const router = useRouter()
+const userStore = useUserStore()
+
+const rules = ref({
+  account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 })
 
-const loading = ref(false)
-const loginForm = reactive<Login.ReqLoginForm>({ account: '', password: '' })
-const login = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.validate(async (valid) => {
-    if (!valid) return
-    loading.value = true
-    try {
-      // 1.执行登录接口
-      const { data } = await loginApi(loginForm)
-      appStore.setToken(data.access_token)
-      // 获取登录用户信息
-      const { data: userinfo } = await getManagerInfoApi()
-      appStore.setUserinfo(userinfo)
-      // 2.添加动态路由
-      await initDynamicRouter()
+const handleLogin = async () => {
+  const valid = await formRef.value.validate()
+  if (!valid) return
 
-      // 3.清除上个账号的 tab 信息
-      tabsStore.closeMultipleTab()
-      // 4.跳转到首页
-      push(permissionStore.homePath)
-      ElNotification({
-        title: getTimeState(),
-        message: '欢迎登录',
-        type: 'success',
-        duration: 3000
-      })
-    } finally {
-      loading.value = false
-      // initCaptcha()
-    }
-  })
-}
+  try {
+    const res = await login(form.value)
+    const { data } = res
+    userStore.setUserInfo(data) // 保存含部门信息的用户数据
 
-// resetForm
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-}
-//点击图片更换验证码
-// const initCaptcha = async () => {
-//   const captchaData = await captchaApi()
-//   console.log('d', captchaData)
-//   captchaUrl.value = captchaData.data.image
-//   loginForm.key = captchaData.data.key
-// }
-
-onMounted(() => {
-  // initCaptcha()
-  // 监听enter事件（调用登录）
-  document.onkeydown = (e: any) => {
-    e = window.event || e
-    if (e.code === 'Enter' || e.code === 'enter' || e.code === 'NumpadEnter') {
-      if (loading.value) return
-      login(loginFormRef.value)
-    }
+    const redirect = router.currentRoute.value.query.redirect || '/dashboard'
+    router.push(redirect as string)
+    ElMessage.success('登录成功')
+  } catch (error) {
+    ElMessage.error('登录失败：账号或密码错误')
   }
-})
-</script>
-
-<style scoped lang="less">
-@import '../index.less';
-
-.vertify_img {
-  width: 100px;
-  height: 100%;
-  padding-left: 10px;
-  cursor: pointer;
-  border-left: 1px solid var(--el-border-color);
 }
-</style>
+</script>
