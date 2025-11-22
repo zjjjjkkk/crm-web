@@ -6,5 +6,8 @@ export const ContractApi = {
   //   list: (params: any) => http.post(COMMON_ADMIN_API + '/contract/list', params)
   remove: (params: any) => http.post(COMMON_ADMIN_API + '/contract/remove', params),
   saveOrEdit: (params: any) => http.post(COMMON_ADMIN_API + '/contract/saveOrUpdate', params),
-  export: (params: any) => http.post(COMMON_ADMIN_API + '/contract/export', params, { responseType: 'blob' })
+  export: (params: any) => http.post(COMMON_ADMIN_API + '/contract/export', params, { responseType: 'blob' }),
+  startApproval: (params: any) => http.post(COMMON_ADMIN_API + '/contract/startApproval', params),
+  approvalContract: (params: any) => http.post(COMMON_ADMIN_API + '/contract/approvalContract', params),
+  trendData: (params: any) => http.post(COMMON_ADMIN_API + '/contract/getApprovalTrendData', params)
 }

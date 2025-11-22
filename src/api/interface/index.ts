@@ -9,6 +9,11 @@ export interface ResultData<T = any> extends Result {
   data: T
 }
 
+export interface TradeArray {
+  timeList: string[] // 时间轴数据列表（如小时、日期、月份等字符串格式）
+  countList?: number[] // 统计数值列表（可选字段，对应时间轴的统计数据，如客户数量）
+}
+
 // * 分页响应参数
 export interface ResPage<T> {
   list: T[]
@@ -29,6 +34,7 @@ export namespace Login {
     account: string
     password: string
   }
+
   export interface ResLogin {
     access_token: string
   }
@@ -39,12 +45,14 @@ export namespace SysManager {
   export interface ReqGetManagerParams extends ReqPage {
     account?: string
   }
+
   export interface ResManagerList {
     id: number
     account: string
     status: number
     createTime: string
   }
+
   export interface ReqEditManagerParams {
     id?: number
     account: string
@@ -64,6 +72,7 @@ export namespace SysRole {
   export interface ReqGetRoleParams extends ReqPage {
     name?: string
   }
+
   export interface ResRoleList {
     id: number
     name: string
@@ -71,6 +80,7 @@ export namespace SysRole {
     menuIds: number[]
     createTime: string
   }
+
   export interface ReqEditRoleParams {
     id?: number
     name: string
@@ -85,6 +95,7 @@ export namespace SysMenu {
     account: string
     password: string
   }
+
   export interface ResMenuList {
     title: string
     id: number
