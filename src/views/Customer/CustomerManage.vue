@@ -11,26 +11,26 @@
     >
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope" v-if="props.isShowHeader">
-        <el-button type="primary" :icon="CirclePlus" v-hasPermi="['sys:customer:add']" @click="openDrawer('新增')">新增客户 </el-button>
-        <el-button type="danger" :icon="Delete" :disabled="!scope.isSelected" v-hasPermi="['...']" @click="batchDelete(scope.selectedListIds)">批量删除 </el-button>
-        <el-button type="primary" :icon="Download" plain @click="downloadFile" v-hasPermi="['sys:customer:export']">导出客户 </el-button>
+        <el-button type="primary" :icon="CirclePlus" v-hasPermi="['sys:customer:add']" @click="openDrawer('新增')">新增客户</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="!scope.isSelected" v-hasPermi="['...']" @click="batchDelete(scope.selectedListIds)">批量删除</el-button>
+        <el-button type="primary" :icon="Download" plain @click="downloadFile" v-hasPermi="['sys:customer:export']">导出客户</el-button>
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button type="primary" link :icon="EditPen" v-hasPermi="['sys:customer:edit']" @click="openDrawer('编辑', scope.row)">编辑 </el-button>
-        <el-button type="danger" link :icon="Delete" v-hasPermi="['sys:customer:remove']" @click="batchDelete([scope.row.id])">删除 </el-button>
-        <el-button type="warning" link :icon="Share" v-hasPermi="['sys:customer:share']" @click="customerToPublic(scope.row.id)"> 转入公海 </el-button>
+        <el-button type="primary" link :icon="EditPen" v-hasPermi="['sys:customer:edit']" @click="openDrawer('编辑', scope.row)">编辑</el-button>
+        <el-button type="danger" link :icon="Delete" v-hasPermi="['sys:customer:remove']" @click="batchDelete([scope.row.id])">删除</el-button>
+        <el-button type="warning" link :icon="Share" v-hasPermi="['sys:customer:share']" @click="customerToPublic(scope.row.id)"> 转入公海</el-button>
       </template>
     </ProTable>
     <CustomerDialog ref="dialogRef" />
   </div>
 </template>
 <script setup lang="ts" name="CustomerManager">
-import { reactive, ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { ColumnProps } from '@/components/ProTable/interface'
 import ProTable from '@/components/ProTable/index.vue'
 import { CustomerApi } from '@/api/modules/customer'
-import { CirclePlus, Delete, Download, EditPen, Share } from '@element-plus/icons-vue'
+import { CirclePlus, EditPen, Delete, Download, Share } from '@element-plus/icons-vue'
 import { useHandleData } from '@/hooks/useHandleData'
 import { CustomerLevelList, CustomerSourceList, FollowUpStatusList, GenderList, IsKeyDecisionMakerList } from '@/configs/enum'
 import { ElMessage, ElMessageBox } from 'element-plus'

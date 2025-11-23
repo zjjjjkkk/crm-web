@@ -1,27 +1,37 @@
 <template>
   <div class="table-box">
-    <ProTable ref="proTable" title="部门列表" rowKey="id" :columns="columns" :requestApi="DepartmentApi.page" :data-callback="dataCallback" :init-param="initParam">
-      <!-- 表格 header 按钮 -->
+    <ProTable
+      ref="proTable"
+      title="部门列表"
+      rowKey="id"
+      :columns="columns"
+      :requestApi="DepartmentApi.page"
+      :initParam="initParam"
+      :dataCallback="dataCallback"
+      :searchCol="{ xs: 2, sm: 3, md: 4, lg: 6, xl: 8 }"
+    >
+      <!-- 修改后：临时移除权限控制 -->
       <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus" v-hasPermi="['sys:department:add']" @click="openDrawer('新增')">新增部门</el-button>
+        <el-button type="primary" :icon="CirclePlus" v-hasPermi="['sys:department:add']" @click="openDrawer('新增')"> 新增部门 </el-button>
       </template>
+
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button type="primary" link :icon="EditPen" v-hasPermi="['sys:department:edit']" @click="openDrawer('编辑', scope.row)">编辑</el-button>
-        <el-button type="danger" link :icon="Delete" v-hasPermi="['sys:department:remove']" @click="deleteDepartment(scope.row)">删除</el-button>
+        <el-button type="primary" link :icon="EditPen" @click="openDrawer('编辑', scope.row)">编辑</el-button>
+        <el-button type="danger" link :icon="Delete" @click="deleteDepartment(scope.row)">删除</el-button>
       </template>
     </ProTable>
-    <DepartmentDialog ref="dialogRef" />
   </div>
+  <DepartmentDialog ref="dialogRef" />
 </template>
-<script setup lang="ts" name="DepartmentManage">
+<script setup lang="ts" name="DepartmentManager">
 import { ref, reactive } from 'vue'
 import { ColumnProps } from '@/components/ProTable/interface'
 import ProTable from '@/components/ProTable/index.vue'
 import { DepartmentApi } from '@/api/modules/department'
 import { CirclePlus, EditPen, Delete } from '@element-plus/icons-vue'
-import DepartmentDialog from './components/DepartmentDialog.vue'
 import { useHandleData } from '@/hooks/useHandleData'
+import DepartmentDialog from './components/DepartmentDialog.vue'
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref()
@@ -56,9 +66,8 @@ const columns: ColumnProps[] = [
   },
   { prop: 'operation', label: '操作', fixed: 'right', width: 330 }
 ]
-
-// 打开 drawer(新增、查看、编辑)
 const dialogRef = ref()
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const openDrawer = (title: string, row: Partial<any> = {}) => {
   let params = {
     title,
@@ -70,8 +79,6 @@ const openDrawer = (title: string, row: Partial<any> = {}) => {
   }
   dialogRef.value.acceptParams(params)
 }
-
-// 删除部门
 const deleteDepartment = async (params: any) => {
   await useHandleData(DepartmentApi.remove, { id: params.id }, `删除【${params.name}】`)
   proTable.value.getTableList()

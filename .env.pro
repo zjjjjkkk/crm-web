@@ -2,7 +2,7 @@
 NODE_ENV=production
 
 # 接口前缀
-VITE_API_URL=http://127.0.0.1:8081
+VITE_API_URL=http://47.110.3.220:8081
 
 # 打包路径
 VITE_BASE_PATH=./
